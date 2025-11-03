@@ -29,51 +29,50 @@ public class Main {
         Boolean game =true;
         String cell = "";
         String response = in.readLine();
-        if( response == "WAIT"){
-
-            System.out.println("waiting for a player");
+        if(response.equals("WAIT")){
+            System.out.println("In attesa di un altro giocatore...");
             in.readLine();
         }
-            System.out.println("ready to play"); 
+        System.out.println("Pronto a giocare!"); 
         
         do {
-            String res ;
-            do{
-                System.out.println("\ncaselle\n0. in alto a sinistra\n1. \tin alto al centro\n2. in alto a destra\n3. \tcentro sinistra\n4.\tcentro\n" + //
+            String res;
+            
+            System.out.println("\ncaselle\n0. in alto a sinistra\n1. \tin alto al centro\n2. in alto a destra\n3. \tcentro sinistra\n4.\tcentro\n" + //
                  "5.\tcentro destra\n6.\tbasso sinistra\n7.\tbasso centro\n8.basso destra");
+            
+            do{
                 System.out.println("\nInserire casella: ");
                 cell = scanner.nextLine();
-                out.println(cell);//invio cella al server
-                res = in.readLine();//attesa risposta OK,KO,W,P
-            }while(!(res=="KO"));
+                out.println(cell);
 
-            if(res == "W"){
-                System.out.println("hai vinto"); 
-                game =false;
-            }else if(res == "P"){
-                System.out.println("pareggio"); 
+                //attesa risposta OK,KO,W,P,other
+                res = in.readLine();
+            }while(res.equals("KO"));
+
+            if (res.equals("W")) {
+                System.out.println("Hai vinto!");
                 game = false;
-            }else if(res == "OK"){
-                System.out.println("mossa valida"); 
-            }else{
-                String received = in.readLine();
-                System.out.println(received); 
-                String[] cells = received.split(",");  
-                if(cells[9]=="L"){
-                    System.out.println("hai perso"); 
-                    game = false;
-                }else if(cells[9]=="P"){
-                    System.out.println("pareggio"); 
-                    game = false;
+            } else if (res.equals("P")) {
+                System.out.println("Pareggio!");
+                game = false;
+            } else if (res.equals("OK")) {
+                System.out.println(res);
+            } else {
+                System.out.println(res); 
+                String[] cells = res.split(",");
+                if (cells.length > 9) {
+                    if (cells[9].equals("L")) {
+                        System.out.println("Hai perso!");
+                        game = false;
+                    } else if (cells[9].equals("P")) {
+                        System.out.println("Pareggio!");
+                        game = false;
+                    }
                 }
             }
-        } while (game);        
 
-         // if (cell.equals("0")) {
-            //     out.println(cell); 
-            //     System.out.println("Connessione interrotta.");
-            //     break; 
-            // }
+        } while (game);        
 
         scanner.close();
         s.close();
