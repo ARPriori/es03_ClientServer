@@ -31,6 +31,10 @@ public class MyThread extends Thread {
 
             boolean ended = false;
             int movesCount = 0;
+
+            out1.println("YOUR_TURN");
+            out2.println("WAIT_TURN");
+
             do {
                 boolean wrongInput = false;
 
@@ -50,7 +54,7 @@ public class MyThread extends Thread {
                             movesCount++;
                             board.set(c1, 1);
 
-                            if (checkWin(board, c1)) {
+                            if (checkWin(board, 1)) {
                                 out1.println("W");
                                 out2.println(generateString(board, "L"));
                                 ended = true;
@@ -61,10 +65,14 @@ public class MyThread extends Thread {
                             } else {
                                 out1.println("OK");
                                 out2.println(generateString(board, ""));
+
+                                out1.println("WAIT_TURN");
+                                out2.println("YOUR_TURN");
                             }
                         }
                     } catch (IOException e) {
                         out2.println("DISCONNECTED");
+                        System.out.println("Player 1 disconnesso.");
                         p1.close();
                         p2.close();
                         return;
@@ -87,7 +95,7 @@ public class MyThread extends Thread {
                             movesCount++;
                             board.set(c2, 2);
 
-                            if (checkWin(board, c2)) {
+                            if (checkWin(board, 2)) {
                                 out2.println("W");
                                 out1.println(generateString(board, "L"));
                                 ended = true;
@@ -98,10 +106,14 @@ public class MyThread extends Thread {
                             } else {
                                 out2.println("OK");
                                 out1.println(generateString(board, ""));
+
+                                out2.println("WAIT_TURN");
+                                out1.println("YOUR_TURN");
                             }
                         }
                     } catch (IOException e) {
                         out1.println("DISCONNECTED");
+                        System.out.println("Player 2 disconnesso.");
                         p1.close();
                         p2.close();
                         return; 

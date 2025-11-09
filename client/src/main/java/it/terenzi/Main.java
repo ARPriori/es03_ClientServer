@@ -36,18 +36,25 @@ public class Main {
         System.out.println("Pronto a giocare!"); 
         
         do {
-            String res;
-            
-            System.out.println("\ncaselle\n0. in alto a sinistra\n1. \tin alto al centro\n2. in alto a destra\n3. \tcentro sinistra\n4.\tcentro\n" + //
+            String res = in.readLine();
+            if(res == null) break;
+
+            if(res.equals("YOUR_TURN")){
+                System.out.println("\ncaselle\n0. in alto a sinistra\n1. \tin alto al centro\n2. in alto a destra\n3. \tcentro sinistra\n4.\tcentro\n" + //
                  "5.\tcentro destra\n6.\tbasso sinistra\n7.\tbasso centro\n8.basso destra");
             
             do{
                 System.out.println("\nInserire casella: ");
                 cell = scanner.nextLine();
                 out.println(cell);
-
-                //attesa risposta OK,KO,W,P,other
                 res = in.readLine();
+
+                if (res == null || res.equals("DISCONNECTED")) {
+                    System.out.println("L'altro giocatore si è disconnesso.");
+                    game = false;
+                    break;
+                }
+
             }while(res.equals("KO"));
 
             if (res.equals("W")) {
@@ -59,8 +66,18 @@ public class Main {
             } else if (res.equals("OK")) {
                 System.out.println(res);
             } else {
-                System.out.println(res); 
                 String[] cells = res.split(",");
+                if (cells.length >= 9) {
+                    System.out.println("\nTabellone:");
+                    for (int i = 0; i < 9; i++) {
+                        String symbol = switch (cells[i]) {
+                            case "1" -> "X";
+                            case "2" -> "O";
+                            default -> " ";
+                        };
+                        System.out.print(symbol + ((i % 3 == 2) ? "\n" : " | "));
+                    }
+                }
                 if (cells.length > 9) {
                     if (cells[9].equals("L")) {
                         System.out.println("Hai perso!");
@@ -71,7 +88,10 @@ public class Main {
                     }
                 }
             }
-
+            }else if(res.equals("WAIT_TURN")){
+                System.out.println("Attendi il turno dell'altro giocatore...");
+            }
+            
         } while (game);        
 
         scanner.close();
