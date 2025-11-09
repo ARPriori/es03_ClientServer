@@ -9,7 +9,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         ServerSocket mySS = new ServerSocket(3000);
 
-
         do {
             Socket sock1 = mySS.accept();
 
