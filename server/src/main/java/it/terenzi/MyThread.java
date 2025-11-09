@@ -42,8 +42,9 @@ public class MyThread extends Thread {
                 do {
                     String cell1 = null;
                     try {
-                        cell1 = in1.readLine(); 
-                        if (cell1 == null) throw new IOException(); //disconnessione
+                        cell1 = in1.readLine();
+                        if (cell1 == null)
+                            throw new IOException(); // disconnessione
                         int c1 = Integer.parseInt(cell1);
 
                         if (board.get(c1) != 0 || c1 >= board.size() || c1 < 0) {
@@ -58,10 +59,12 @@ public class MyThread extends Thread {
                                 out1.println("W");
                                 out2.println(generateString(board, "L"));
                                 ended = true;
+                                break;
                             } else if (movesCount == 9) {
                                 out1.println("P");
                                 out2.println(generateString(board, "P"));
                                 ended = true;
+                                break;
                             } else {
                                 out1.println("OK");
                                 out2.println(generateString(board, ""));
@@ -71,20 +74,18 @@ public class MyThread extends Thread {
                             }
                         }
                     } catch (IOException e) {
-                        out2.println("DISCONNECTED");
-                        System.out.println("Player 1 disconnesso.");
-                        p1.close();
-                        p2.close();
+                        handleDisconnect(p1, p2, out2, "Giocatore 1");
                         return;
                     }
-                } while (wrongInput && !ended);
+                } while (wrongInput);
 
                 // Turno p2
                 do {
                     String cell2 = null;
                     try {
                         cell2 = in2.readLine();
-                        if (cell2 == null) throw new IOException(); // disconnessione
+                        if (cell2 == null)
+                            throw new IOException(); // disconnessione
                         int c2 = Integer.parseInt(cell2);
 
                         if (board.get(c2) != 0 || c2 >= board.size() || c2 < 0) {
@@ -99,10 +100,12 @@ public class MyThread extends Thread {
                                 out2.println("W");
                                 out1.println(generateString(board, "L"));
                                 ended = true;
+                                break;
                             } else if (movesCount == 9) {
                                 out2.println("P");
                                 out1.println(generateString(board, "P"));
                                 ended = true;
+                                break;
                             } else {
                                 out2.println("OK");
                                 out1.println(generateString(board, ""));
@@ -112,13 +115,11 @@ public class MyThread extends Thread {
                             }
                         }
                     } catch (IOException e) {
-                        out1.println("DISCONNECTED");
-                        System.out.println("Player 2 disconnesso.");
-                        p1.close();
-                        p2.close();
-                        return; 
+                        handleDisconnect(p2, p1, out1, "Giocatore 2");
+                        return;
+
                     }
-                } while (wrongInput && !ended);
+                } while (wrongInput);
 
             } while (!ended);
 
@@ -159,5 +160,20 @@ public class MyThread extends Thread {
     private String generateString(ArrayList<Integer> board, String status) {
         String boardString = String.join(",", board.stream().map(String::valueOf).toArray(String[]::new));
         return boardString + "," + status;
+    }
+
+    private void handleDisconnect(Socket disconnected, Socket other, PrintWriter outOther, String who) {
+        try {
+            System.out.println(who + " si è disconnesso.");
+            if (!other.isClosed()) {
+                outOther.println("DISCONNECTED");
+                other.close();
+            }
+            if (!disconnected.isClosed()) {
+                disconnected.close();
+            }
+        } catch (IOException ex) {
+            System.out.println("Errore durante la chiusura socket.");
+        }
     }
 }
